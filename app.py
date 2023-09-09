@@ -18,6 +18,14 @@ UPLOAD_FOLDER = 'uploaded_images'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+def generate_response(message, status_code):
+    response = make_response(message, status_code)
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Allow requests from all origins
+    response.headers['Access-Control-Allow-Headers'] = '*'  # Allow all headers
+    response.headers['Access-Control-Allow-Methods'] = '*'  # Allow all HTTP methods
+
+    return response
+
 @app.route('/process_image', methods=['POST'])
 def process_image():
     # Retrieve the ID from the request
@@ -42,7 +50,9 @@ def process_image():
         file.save(input_path)
         # Here you can run your function on the saved image
         result = run_function_on_image(input_path)
-        return jsonify({"result": result, "url": "/get_image/" })
+        # return jsonify()
+        urls = ["http://ec2-18-170-44-95.eu-west-2.compute.amazonaws.com:5001/get_image/" + str(x) for x in result]
+        return generate_response({"result": result, "urls": urls }, 200)
 
 from dotenv import load_dotenv
 from helpers import compose_images_from_json, remove_background
@@ -78,7 +88,7 @@ def run_function_on_image(input_path):
         output_image_path = os.path.join(UPLOAD_FOLDER, output_image_name)
                 
         compose_images_from_json(
-            input_image_path = f'output_image.png',  
+            input_image_path = output_path,  
             json_path = f'backgrounds/{key}_composition.json',
             output_image_path = output_image_path
         )
