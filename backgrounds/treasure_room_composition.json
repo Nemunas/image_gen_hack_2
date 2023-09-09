@@ -1,0 +1,6 @@
+{
+    "image_name" : "treasure_room.png", 
+    "fraction_from_left" : 0.35, 
+    "fraction_of_width" : 0.3,
+    "fraction_from_top" : 0.55     
+}
