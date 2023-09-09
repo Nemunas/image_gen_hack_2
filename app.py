@@ -21,11 +21,12 @@ if not os.path.exists(UPLOAD_FOLDER):
 @app.route('/process_image', methods=['POST'])
 def process_image():
     # Retrieve the ID from the request
-    story_id = request.form.get('story_id')
+    # story_id = request.form.get('story_id')
     
     # Validate ID
-    if not story_id:
-        return jsonify({"error": "ID is required"}), 400
+    # if not story_id:
+    #     return jsonify({"error": "ID is required"}), 400
+    story_id = 1
 
     # Check if the post request has the file part
     if 'file' not in request.files:
@@ -41,7 +42,7 @@ def process_image():
         file.save(input_path)
         # Here you can run your function on the saved image
         result = run_function_on_image(input_path)
-        return jsonify({"result": result})
+        return jsonify({"result": result, "url": "/get_image/" })
 
 from dotenv import load_dotenv
 from helpers import compose_images_from_json, remove_background
